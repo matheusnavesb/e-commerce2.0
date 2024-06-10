@@ -74,20 +74,22 @@ public class UserServiceImpl implements UserService {
 
         // Atualiza telefones se existirem
         if (dto.telephones() != null) {
+            user.getTelephones().clear();
             List<Telephone> telephones = dto.telephones().stream()
                     .map(t -> new Telephone(t.codeCountry(), t.codeState(), t.number(), user))
                     .collect(Collectors.toList());
-            user.setTelephones(telephones);
+            user.getTelephones().addAll(telephones);
         } else {
             user.getTelephones().clear();
         }
 
         // Atualiza endereços se existirem
         if (dto.addresses() != null) {
+            user.getAddresses().clear();
             List<Address> addresses = dto.addresses().stream()
                     .map(a -> new Address(a.street(), a.city(), a.state(), a.zipcode(), a.country(), user))
                     .collect(Collectors.toList());
-            user.setAddresses(addresses);
+            user.getAddresses().addAll(addresses);
         } else {
             user.getAddresses().clear();
         }
@@ -135,7 +137,8 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userOptional.get();
-        Telephone newTelephone = new Telephone(telephoneRequest.codeCountry(), telephoneRequest.codeState(), telephoneRequest.number(), user);
+        Telephone newTelephone = new Telephone(telephoneRequest.codeCountry(), telephoneRequest.codeState(),
+                telephoneRequest.number(), user);
         user.getTelephones().add(newTelephone);
 
         repository.persist(user);
@@ -171,7 +174,8 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userOptional.get();
-        Address newAddress = new Address(addressRequest.street(), addressRequest.city(), addressRequest.state(), addressRequest.zipcode(), addressRequest.country(), user);
+        Address newAddress = new Address(addressRequest.street(), addressRequest.city(), addressRequest.state(),
+                addressRequest.zipcode(), addressRequest.country(), user);
         user.getAddresses().add(newAddress);
 
         repository.persist(user);
